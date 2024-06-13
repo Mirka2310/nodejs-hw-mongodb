@@ -1,33 +1,13 @@
-import { Router } from 'express';
-import {
-  createContactController,
-  deleteContactController,
-  getAllContactsController,
-  getContactController,
-  patchContactController,
-} from '../controllers/contacts.js';
-import ctrlWrapper from '../utils/ctrlWrapper.js';
-import { validateBody } from '../middlewares/validateBody.js';
-import { createContactSchema } from '../validation/contacts.js';
+import { ContactsCollection } from '../db/model.js';
 
-const router = Router();
+export const getAllContacts = async () => {
+  const contacts = await ContactsCollection.find();
 
-router.get('/contacts', ctrlWrapper(getAllContactsController));
+  return contacts;
+};
 
-router.get('/contacts/:contactId', ctrlWrapper(getContactController));
+export const getContactById = async (contactId) => {
+  const contact = await ContactsCollection.findById(contactId);
 
-router.post(
-  '/contacts',
-  validateBody(createContactSchema),
-  ctrlWrapper(createContactController),
-);
-
-router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
-
-router.patch(
-  '/contacts/:contactId',
-  validateBody(createContactSchema),
-  ctrlWrapper(patchContactController),
-);
-
-export default router;
+  return contact;
+};

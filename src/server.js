@@ -1,34 +1,71 @@
 import express from 'express';
-import pino from 'pino-http';
 import cors from 'cors';
-import errorHandler from './middlewares/errorHandler.js';
-import notFoundHandler from './middlewares/notFoundHandler.js';
+import pino from 'pino-http';
 import { env } from './utils/env.js';
-import contactsRouter from './routers/contacts.js';
-// import mongoose from 'mongoose';
-// import { ENV_VARS } from './contacts/index.js';
+import { getAllContacts, getContactById } from './services/contacts.js';
 
-const PORT = Number(env('PORT', '3000'));
+const PORT = Number(env('PORT', 3000));
 
-const setupServer = () => {
+export const setupServer = () => {
   const app = express();
+
+  app.use(pino({ transport: { target: 'pino-pretty' } }));
+
+  app.use((req, res, next) => {
+    console.log(`Time: ${new Date().toLocaleString()}`);
+    next();
+  });
+
   app.use(express.json());
   app.use(cors());
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
 
-  app.use(contactsRouter);
-  app.use(notFoundHandler);
-  app.use(errorHandler);
-
-  app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`);
+  app.get('/contacts', async (req, res, next) => {
+    try {
+      const contacts = await getAllContacts();
+      res.json({
+        status: 200,
+        message: 'Successfully found contacts!',
+        data: contacts,
+      });
+    } catch (error) {
+      next(error);
+    }
   });
-};
 
-export default setupServer;
+  app.get('/contacts/:contactId', async (req, res, next) => {
+    const { contactId } = req.params;
+
+    try {
+      const contact = await getContactById(contactId);
+
+      if (!contact) {
+        return res.json({
+          status: 404,
+          message: `Contact with id ${contactId} not found`,
+        });
+      }
+
+      res.json({
+        status: 200,
+        message: `Successfully found contact with id ${contactId}!`,
+        data: contact,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.use('*', (req, res) => {
+    res.status(404).json({ message: 'Route not found' });
+  });
+
+app.use((err, req, res) => {
+  console.error(err.message);
+  res.status(500).json({ message: 'Internal Server Error' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+};

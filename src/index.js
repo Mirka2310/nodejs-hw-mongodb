@@ -1,10 +1,9 @@
-// import express from 'express';
-import { initMongoConnection } from './db/initMongoConnection.js';
-import setupServer from './src/contacts/controllers/db/middlewares/routers/routers/utils/validation/server.js';
+import { setupServer } from './server.js';
+import { initMongoConnection } from './db/initMongoConnecrion.js';
 
-const bootstrap = async () => {
+const init = async () => {
   await initMongoConnection();
   setupServer();
 };
 
-bootstrap();
+init();
