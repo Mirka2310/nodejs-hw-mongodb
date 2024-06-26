@@ -46,11 +46,13 @@ export const getContactByIdController = async (req, res, next) => {
 export const createContactController = async (req, res, next) => {
   try {
     const contact = await createContact(req.body);
+    const contactObj = contact.toObject();
+    delete contactObj.__v;
 
     res.status(201).json({
       status: 201,
       message: 'Successfully created a contact!',
-      data: contact,
+      data: contactObj,
     });
   } catch (error) {
     next(error);
@@ -86,11 +88,13 @@ export const patchedContactController = async (req, res, next) => {
     }
 
     const status = result.isNew ? 201 : 200;
+    const contactObj = result.contact.toObject();
+    delete contactObj.__v;
 
     res.status(status).json({
       status,
       message: `Successfully patched a contact!`,
-      data: result.contact,
+      data: contactObj,
     });
   } catch (error) {
     next(error);
