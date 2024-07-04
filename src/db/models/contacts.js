@@ -1,5 +1,4 @@
-import { Schema, model } from 'mongoose';
-
+import { model, Schema } from 'mongoose';
 const contactsSchema = new Schema(
   {
     name: {
@@ -12,6 +11,12 @@ const contactsSchema = new Schema(
     },
     email: {
       type: String,
+      validate: {
+        validator: function (v) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+        },
+        message: (props) => `${props.value} is not a valid email address!`,
+      },
       required: false,
     },
     isFavourite: {
@@ -21,13 +26,11 @@ const contactsSchema = new Schema(
     contactType: {
       type: String,
       enum: ['work', 'home', 'personal'],
-      default: 'personal',
       required: true,
+      default: 'personal',
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true, versionKey: false },
 );
 
-export const ContactsCollection = model('contacts', contactsSchema);
+export const ContactColection = model('Contact', contactsSchema);
