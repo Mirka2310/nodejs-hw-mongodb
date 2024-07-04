@@ -1,9 +1,5 @@
-const notFoundHandler = (reg, res, next) => {
+export const notFoundHandler = (_, res) => {
   res.status(404).json({
-    status: 404,
-    message: 'Route not found',
-    error: res.message,
+    message: 'Rout not found',
   });
 };
-
-export default notFoundHandler;
