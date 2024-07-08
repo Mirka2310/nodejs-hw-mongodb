@@ -14,7 +14,8 @@ export const getContactController = async (req, res, next) => {
       perPage,
       sortBy,
       sortOrder,
-      filter,
+        filter,
+      userId,
     });
 
     res.json({
@@ -29,8 +30,9 @@ export const getContactController = async (req, res, next) => {
 
 export const getContactByIdController = async (req, res, next) => {
     const { contactId } = req.params;
+    const userId = req.user._id;
     try {
-        const contact = await getContactsById(contactId);
+        const contact = await getContactsById(contactId,userId);
         if (!contact) {
             next(createHttpError(404, 'Contact not found'));
             return;
@@ -46,22 +48,21 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res, next) => {
-    try {
-        const contact = await createContact(req.body);
-        res.status(201).json({
-            status: 201,
-            message: 'Successfully created a contact!',
-            data: contact,
-        });
-    } catch (error) {
-        next(error);
-    }
+    const userId = req.user._id;
+  const contact = await createContact({ ...req.body, userId });
+
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact',
+    data: contact,
+  });
 };
 
 export const patchContactController = async (req, res, next) => {
     const { contactId } = req.params;
+     const userId = req.user._id;
     try {
-        const result = await changeContact(contactId, req.body);
+        const result = await changeContact(contactId, req.body,userId);
         if (!result) {
             next(createHttpError(404, 'Contact not found'));
             return;
@@ -78,8 +79,9 @@ export const patchContactController = async (req, res, next) => {
 
 export const deleteContactController = async (req, res, next) => {
     const { contactId } = req.params;
+     const userId = req.user._id;
     try {
-        const contact = await deleteContact(contactId);
+        const contact = await deleteContact(contactId,userId);
         if (!contact) {
             next(createHttpError(404, 'Contact not found'));
             return;
