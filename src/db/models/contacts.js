@@ -1,8 +1,9 @@
-import { Schema } from 'mongoose';
+import {model, Schema } from 'mongoose';
 
-import mongoose from 'mongoose';
 
-const contactSchema = new mongoose.Schema(
+
+
+const contactSchema = new Schema(
   {
     name: {
       type: String,
@@ -14,13 +15,8 @@ const contactSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      validate: {
-        validator: function (v) {
-          return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
-        },
-        message: (props) => `${props.value} is not a valid email address!`,
-      },
-      required: [false, 'User email required'],
+      lowercase: true,
+      trim: true,
     },
     isFavourite: {
       type: Boolean,
@@ -29,23 +25,29 @@ const contactSchema = new mongoose.Schema(
     contactType: {
       type: String,
       enum: ['work', 'home', 'personal'],
-      required: true,
       default: 'personal',
+      required: true,
     },
-  },
-  {
-    toJSON: {
-      transform: function (doc, ret) {
-        delete ret.__v;
-        return ret;
-      },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 
-const contactsCollection = mongoose.model('Contacts', contactSchema);
+const contactsCollection  = model('Contacts', contactSchema);
 
-export default contactsCollection;
+export default contactsCollection
