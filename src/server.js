@@ -1,18 +1,16 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import { env } from './utils/env.js';
-import { notFoundHandler } from './middlewares/notFoundHandlers.js';
-import router from './routers/index.js';
-import { errorHandler } from './middlewares/errorHandler.js';
-import contactsRouter from './routers/contacts.js';
 import cookieParser from 'cookie-parser';
 
-dotenv.config();
+import { env } from './utils/env.js';
 
-const PORT = Number(env('PORT', '3002'));
+import router from './routers/index.js';
 
+import notFoundHandler from './middlewares/notFoundHandler.js';
+import errorHandler from './middlewares/errorHandler.js';
+
+const PORT = Number(env('PORT', '3000'));
 export const setupServer = () => {
   const app = express();
 
@@ -35,9 +33,9 @@ export const setupServer = () => {
   });
 
   app.use(router);
-  app.use('/contacts', contactsRouter);
 
   app.use('*', notFoundHandler);
+
   app.use(errorHandler);
 
   app.listen(PORT, () => {
