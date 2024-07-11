@@ -1,18 +1,27 @@
-import { loginUser } from '../services/auth.js';
 import { registerUser } from '../services/auth.js';
+import createHttpError from 'http-errors';
+import { loginUser } from '../services/auth.js';
 import { ONE_DAY } from '../constants/index.js';
 import { logoutUser } from '../services/auth.js';
 import { refreshUsersSession } from '../services/auth.js';
 
-export const registerUserController = async (req, res) => {
-  const user = await registerUser(req.body);
+export const registerUserController = async (req, res, next) => {
+  if ('userId' in req.body) {
+    return next(createHttpError(400, 'Field userId must not be included in the request body'));
+  }
 
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully registered a user!',
-    data: user,
-  });
+  registerUser(req.body)
+    .then((user) => {
+      res.status(201).json({
+        status: 201,
+        message: 'Successfully registered a user!',
+        data: user,
+      });
+    })
+    .catch(next);
 };
+
+
 
 export const loginUserController = async (req, res) => {
   const session = await loginUser(req.body);
