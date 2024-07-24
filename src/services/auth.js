@@ -1,10 +1,10 @@
 import createHttpError from 'http-errors';
-import { UsersCollection } from '../db/models/user.js';
+import { UsersCollection } from '../db/user.js';
 import { randomBytes } from 'crypto';
 import bcrypt from 'bcrypt';
 
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
-import { SessionsCollection } from '../db/models/session.js';
+import { SessionsCollection } from '../db/session.js';
 
 import jwt from 'jsonwebtoken';
 
