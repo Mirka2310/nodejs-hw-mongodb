@@ -2,11 +2,7 @@ import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { registerUserSchema } from '../validation/auth.js';
 import { registerUserController } from '../controllers/auth.js';
-<<<<<<< Updated upstream
 import { validateBody } from '../middleware/validateBody.js';
-=======
-import { validateBody } from '../middlewares/validateBody.js';
->>>>>>> Stashed changes
 import { loginUserSchema } from '../validation/auth.js';
 import { loginUserController } from '../controllers/auth.js';
 import { logoutUserController } from '../controllers/auth.js';
@@ -45,8 +41,4 @@ router.post(
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
-<<<<<<< Updated upstream
 export default router;
-=======
-export default router;
->>>>>>> Stashed changes
