@@ -1,18 +1,10 @@
 import createHttpError from 'http-errors';
-<<<<<<< Updated upstream
 import { UsersCollection } from '../db/user.js';
-=======
-import { UsersCollection } from '../db/models/user.js';
->>>>>>> Stashed changes
 import { randomBytes } from 'crypto';
 import bcrypt from 'bcrypt';
 
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
-<<<<<<< Updated upstream
 import { SessionsCollection } from '../db/session.js';
-=======
-import { SessionsCollection } from '../db/models/session.js';
->>>>>>> Stashed changes
 
 import jwt from 'jsonwebtoken';
 

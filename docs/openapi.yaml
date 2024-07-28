@@ -14,11 +14,7 @@ tags:
     description: User authorization
 servers:
   - url: http://localhost:3000
-<<<<<<< Updated upstream
   - url: https://nodejs-hw-mongodb-1-of8j.onrender.com
-=======
-  - url: https://nodejs-hw-mongodb-1-ag20.onrender.com
->>>>>>> Stashed changes
 paths:
   /contacts:
     get:

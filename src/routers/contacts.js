@@ -14,15 +14,9 @@ import {
   updateContactSchema,
 } from '../validation/contacts.js';
 
-<<<<<<< Updated upstream
 import { authenticate } from '../middleware/authenticate.js';
 
 import { upload } from '../middleware/multer.js';
-=======
-import { authenticate } from '../middlewares/authenticate.js';
-
-import { upload } from '../middlewares/multer.js';
->>>>>>> Stashed changes
 
 const router = Router();
 

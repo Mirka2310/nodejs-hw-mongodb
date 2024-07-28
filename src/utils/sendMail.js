@@ -1,11 +1,7 @@
 import nodemailer from 'nodemailer';
 
 import { SMTP } from '../constants/index.js';
-<<<<<<< Updated upstream
-import { env } from './env.js';
-=======
 import { env } from '../utils/env.js';
->>>>>>> Stashed changes
 
 const transporter = nodemailer.createTransport({
   host: env(SMTP.SMTP_HOST),
