@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import { ContactsCollection } from '../db/model.js';
+=======
+import { ContactsCollection } from '../db/models/contact.js';
+>>>>>>> Stashed changes
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../constants/index.js';
 

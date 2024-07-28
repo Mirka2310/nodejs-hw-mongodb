@@ -1,7 +1,13 @@
 import createHttpError from 'http-errors';
+<<<<<<< Updated upstream:src/middleware/authenticate.js
 
 import { SessionsCollection } from '../db/session.js';
 import { UsersCollection } from '../db/user.js';
+=======
+>>>>>>> Stashed changes:src/middlewares/authenticate.js
+
+import { SessionsCollection } from '../db/models/session.js';
+import { UsersCollection } from '../db/models/user.js';
 
 export const authenticate = async (req, res, next) => {
   const authHeader = req.get('Authorization');
