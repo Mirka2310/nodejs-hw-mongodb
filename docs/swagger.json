@@ -2,12 +2,12 @@
   "openapi": "3.1.0",
   "info": {
     "version": "1.0.0",
-    "title": "CONTACTS",
+    "title": "Contacts-app",
     "license": {
       "name": "Apache 2.0",
-      "url": "<http://www.apache.org/licenses/LICENSE-2.0.html>"
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "APP FOR STORING CONTACTS\n"
+    "description": "This is a documentation of contacts app\n"
   },
   "servers": [
     {
@@ -20,11 +20,11 @@
   "tags": [
     {
       "name": "Contacts",
-      "description": "adding/deleting/patching contacts"
+      "description": "Operations about users."
     },
     {
       "name": "Auth",
-      "description": "User authorization"
+      "description": "Auth operations."
     }
   ],
   "paths": {
@@ -65,7 +65,7 @@
               "type": "string",
               "example": "name"
             },
-            "description": "All student's fields can be mentioned. Default value - _id"
+            "description": "All contact's fields can be mentioned. Default value - _id"
           },
           {
             "in": "query",
@@ -81,23 +81,18 @@
           },
           {
             "in": "query",
-            "name": "isFavourite",
+            "name": "contactType",
             "schema": {
-              "type": "boolean",
-              "example": true
+              "type": "string",
+              "example": "work"
             }
           },
           {
             "in": "query",
-            "name": "contactType",
+            "name": "isFavourite",
             "schema": {
-              "type": "string",
-              "enum": [
-                "work",
-                "home",
-                "personal"
-              ],
-              "example": "personal"
+              "type": "boolean",
+              "example": false
             }
           }
         ],
@@ -182,13 +177,14 @@
         ],
         "summary": "Create contact",
         "operationId": "createContact",
-        "description": "Create a contact with payload",
+        "description": "Create a new contact with the provided payload.",
         "security": [
           {
             "bearerAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
@@ -199,29 +195,29 @@
                 ],
                 "properties": {
                   "name": {
-                    "description": "Contact's name",
                     "type": "string",
+                    "description": "Contact's name",
                     "example": "John Doe"
                   },
                   "phoneNumber": {
+                    "type": "string",
                     "description": "Phone number",
-                    "type": "number",
-                    "example": 380000000007
+                    "example": "+380000000007"
                   },
                   "email": {
-                    "description": "Email address",
                     "type": "string",
                     "format": "email",
+                    "description": "Email address",
                     "example": "john.doe@example.com"
                   },
                   "isFavourite": {
-                    "description": "Contact is favourite or not",
                     "type": "boolean",
+                    "description": "Indicates if the contact is a favourite",
                     "example": true
                   },
                   "contactType": {
-                    "description": "Contact type",
                     "type": "string",
+                    "description": "Contact's type",
                     "enum": [
                       "work",
                       "home",
@@ -230,9 +226,9 @@
                     "example": "work"
                   },
                   "photo": {
-                    "description": "Link to photo",
                     "type": "string",
-                    "format": "binary"
+                    "format": "binary",
+                    "description": "File upload for the contact photo"
                   }
                 }
               }
@@ -241,7 +237,7 @@
         },
         "responses": {
           "201": {
-            "description": "Creates a contact",
+            "description": "Contact created successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -280,7 +276,7 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Get contacts by id",
+        "summary": "Get contact by id",
         "operationId": "getContact",
         "description": "Get contact by id",
         "security": [
@@ -294,9 +290,9 @@
             "name": "contactId",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
-            }
+              "type": "string"
+            },
+            "example": "65ca67e7ae7f10c88b598384"
           }
         ],
         "responses": {
@@ -338,9 +334,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Patch contact",
+        "summary": "Patch contact by id",
         "operationId": "updateContact",
-        "description": "Updating a contact by id",
+        "description": "Update an existing contact's information by its unique identifier.",
         "security": [
           {
             "bearerAuth": []
@@ -353,12 +349,12 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "6675c7696b0e4bf1f8e3f1aa"
+              "example": "65ca67e7ae7f10c88b598384"
             }
           }
         ],
         "requestBody": {
-          "required": false,
+          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
@@ -366,23 +362,28 @@
                 "properties": {
                   "name": {
                     "type": "string",
+                    "description": "Contact's name",
                     "example": "John Doe"
                   },
                   "phoneNumber": {
                     "type": "string",
+                    "description": "Phone number",
                     "example": "+380000000007"
                   },
                   "email": {
                     "type": "string",
                     "format": "email",
+                    "description": "Email address",
                     "example": "john.doe@example.com"
                   },
                   "isFavourite": {
                     "type": "boolean",
-                    "example": true
+                    "description": "Contact favourite",
+                    "example": false
                   },
                   "contactType": {
                     "type": "string",
+                    "description": "Contact's type",
                     "enum": [
                       "work",
                       "home",
@@ -392,7 +393,9 @@
                   },
                   "photo": {
                     "type": "string",
-                    "format": "binary"
+                    "format": "binary",
+                    "description": "URL to the contact`s photo",
+                    "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
                   }
                 }
               }
@@ -463,7 +466,7 @@
         ],
         "summary": "Delete contact by id",
         "operationId": "deleteContact",
-        "description": "Deleting a selected contact by id",
+        "description": "Delete a contact by its unique identifier.",
         "security": [
           {
             "bearerAuth": []
@@ -548,12 +551,19 @@
         "type": "object",
         "required": [
           "name",
-          "phoneNumber"
+          "phoneNumber",
+          "email",
+          "isFavourite",
+          "contactType",
+          "updatedAt",
+          "createdAt",
+          "userId",
+          "photo"
         ],
         "properties": {
           "name": {
             "type": "string",
-            "description": "Contact name",
+            "description": "Contact's name",
             "example": "John Doe"
           },
           "phoneNumber": {
@@ -563,30 +573,30 @@
           },
           "email": {
             "type": "string",
-            "description": "Email address",
             "format": "email",
+            "description": "Email address",
             "example": "john.doe@example.com"
           },
           "isFavourite": {
             "type": "boolean",
-            "description": "Contact is favourite or not",
+            "description": "Contact favourite",
             "example": true
           },
           "createdAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Date/time of contact creation",
-            "example": "2024-07-06T19:29:06.639Z"
+            "description": "When was created",
+            "example": "2024-06-06T17:48:14.102Z"
           },
           "updatedAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Date/time of contact update",
-            "example": "2024-07-06T19:29:06.639Z"
+            "description": "When was updated",
+            "example": "2024-06-06T17:48:14.102Z"
           },
           "contactType": {
             "type": "string",
-            "description": "Contact type",
+            "description": "Contact's type",
             "enum": [
               "work",
               "home",
@@ -597,12 +607,12 @@
           "userId": {
             "type": "string",
             "description": "ID of the user who created the contact",
-            "example": "6675c7696b0e4bf1f8e3f1aa"
+            "example": "60d21b4667d0d8992e610c85"
           },
           "photo": {
             "type": "string",
             "format": "binary",
-            "description": "https://res.cloudinary.com/doin5fda1/image/upload/v1720294145/hrzgcpcyw8idmsbpuh1c.png"
+            "description": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
           }
         }
       }
