@@ -2,19 +2,15 @@ import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
 import { env } from './utils/env.js';
-
 import router from './routers/index.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { UPLOAD_DIR } from './constans/index.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
-import { notFoundHandler } from './middleware/notFoundHandler.js';
-import { errorHandler } from './middleware/errorHandler.js';
+const PORT = Number(env('PORT', '3002'));
 
-import { UPLOAD_DIR } from './constants/index.js';
-
-import { swaggerDocs } from './middleware/swaggerDocs.js';
-
-const PORT = Number(env('PORT', '3000'));
 export const setupServer = () => {
   const app = express();
 
@@ -32,20 +28,17 @@ export const setupServer = () => {
 
   app.use('/uploads', express.static(UPLOAD_DIR));
   app.use('/api-docs', swaggerDocs());
+  app.use(router);
 
   app.get('/', (req, res) => {
     res.json({
-      message: 'Hello World!',
+      message: 'Hello',
     });
   });
-
-  app.use(router);
 
   app.use('*', notFoundHandler);
 
   app.use(errorHandler);
-
-  app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
