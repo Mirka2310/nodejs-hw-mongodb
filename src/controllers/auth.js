@@ -1,10 +1,9 @@
+import { logoutUser, registerUser } from '../services/auth.js';
 import { loginUser } from '../services/auth.js';
-import { registerUser } from '../services/auth.js';
-import { ONE_DAY } from '../constants/index.js';
-import { logoutUser } from '../services/auth.js';
-import { refreshUsersSession } from '../services/auth.js';
-import { requestResetToken } from '../services/auth.js';
-import { resetPassword } from '../services/auth.js';
+import { THIRTY_DAYS } from '../constans/index.js';
+import { refreshUsersSession, requestResetToken } from '../services/auth.js';
+import { resetPassword, loginOrSignupWithGoogle } from '../services/auth.js';
+import { generateAuthUrl } from '../utils/googleOAuthClient.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -15,22 +14,48 @@ export const registerUserController = async (req, res) => {
     data: user,
   });
 };
-
 export const loginUserController = async (req, res) => {
   const session = await loginUser(req.body);
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
+    expires: new Date(Date.now() + THIRTY_DAYS),
   });
   res.cookie('sessionId', session._id, {
     httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
+    expires: new Date(Date.now() + THIRTY_DAYS),
   });
 
   res.json({
     status: 200,
     message: 'Successfully logged in an user!',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
+};
+
+const setupSession = (res, session) => {
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + THIRTY_DAYS),
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + THIRTY_DAYS),
+  });
+};
+export const refreshUserSessionController = async (req, res) => {
+  const session = await refreshUsersSession({
+    sessionId: req.cookies.sessionId,
+    refreshToken: req.cookies.refreshToken,
+  });
+
+  setupSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully refreshed a session!',
     data: {
       accessToken: session.accessToken,
     },
@@ -48,44 +73,11 @@ export const logoutUserController = async (req, res) => {
   res.status(204).send();
 };
 
-const setupSession = (res, session) => {
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
-  });
-};
-
-export const refreshUserSessionController = async (req, res) => {
-  if (!req.cookies.sessionId || !req.cookies.refreshToken) {
-    return res.status(400).json({
-      status: 400,
-      message: 'Session ID or Refresh Token not provided',
-    });
-  }
-  const session = await refreshUsersSession({
-    sessionId: req.cookies.sessionId,
-    refreshToken: req.cookies.refreshToken,
-  });
-
-  setupSession(res, session);
-
-  res.json({
-    status: 200,
-    message: 'Successfully refreshed a session!',
-    data: {
-      accessToken: session.accessToken,
-    },
-  });
-};
-
 export const requestResetEmailController = async (req, res) => {
   await requestResetToken(req.body.email);
+
   res.json({
-    message: 'Reset password email was successfully sent!',
+    message: 'Reset password email was successfull sent!',
     status: 200,
     data: {},
   });
@@ -93,9 +85,35 @@ export const requestResetEmailController = async (req, res) => {
 
 export const resetPasswordController = async (req, res) => {
   await resetPassword(req.body);
+
   res.json({
-    message: 'Password was successfully reset!',
+    message: 'Password was succesfully reset!',
     status: 200,
     data: {},
+  });
+};
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+
+  res.json({
+    status: 200,
+    message: 'Successfully get Google OAuth url!',
+    data: {
+      url,
+    },
+  });
+};
+
+export const loginWithGoogleController = async (req, res) => {
+  const session = await loginOrSignupWithGoogle(req.body.code);
+  setupSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully logged in via Google OAuth!',
+    data: {
+      accessToken: session.accessToken,
+    },
   });
 };

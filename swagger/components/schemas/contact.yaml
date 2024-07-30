@@ -52,4 +52,4 @@ properties:
   photo:
     type: string
     format: binary
-    description: 'https://res.cloudinary.com/doin5fda1/image/upload/v1720294145/hrzgcpcyw8idmsbpuh1c.png'
+    description: 'https://res.cloudinary.com/uqwgdu/image/upload/image.png'
